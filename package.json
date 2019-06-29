@@ -4,7 +4,9 @@
   "description": "LapisDB example",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf dist && tsc",
+    "serve": "node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,12 @@
   "bugs": {
     "url": "https://github.com/kekland/lapisdb-example/issues"
   },
-  "homepage": "https://github.com/kekland/lapisdb-example#readme"
+  "homepage": "https://github.com/kekland/lapisdb-example#readme",
+  "dependencies": {
+    "lapisdb": "^0.3.0",
+    "lapisdb-level-adapter": "0.0.3"
+  },
+  "devDependencies": {
+    "rimraf": "^2.6.3"
+  }
 }
