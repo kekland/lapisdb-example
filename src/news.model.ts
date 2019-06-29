@@ -6,11 +6,11 @@ export class News extends Model<News> {
   author: string;
   comments: string[];
 
-  constructor(data: {body: string, author: string, comments: string[]}) {
+  constructor(body: string, author: string, comments: string[]) {
     super(DatabaseService.newsService)
 
-    this.body = data.body
-    this.author = data.author
-    this.comments = data.comments
+    this.body = body
+    this.author = author
+    this.comments = comments
   }
 }
