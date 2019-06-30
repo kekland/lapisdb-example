@@ -1,10 +1,13 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { DatabaseService } from './database.service';
 import { News } from './news.model';
+import { Datastore, DatastoreManager } from 'lapisdb';
+import { LevelDbAdapter } from 'lapisdb-level-adapter'
 
 const bootstrap = async () => {
-  DatabaseService.initialize('./database')
+  const adapter = new LevelDbAdapter(News, { name: 'news', directory: './database' })
+  const newsDatabase = new Datastore<News>('news', News, adapter)
+  DatastoreManager.register(newsDatabase)
 
   // Create an Express server
   const app = express()
@@ -13,13 +16,13 @@ const bootstrap = async () => {
 
   // Get all news
   app.get('/news', async (req, res) => {
-    const news = await DatabaseService.newsService.getItems()
+    const news = await newsDatabase.getItems()
     res.status(200).send(news)
   })
 
   // Get a specific news article
   app.get('/news/:id', async (req, res) => {
-    const article = await DatabaseService.newsService.get(req.params.id)
+    const article = await newsDatabase.get(req.params.id)
     res.status(200).send(article)
   })
 
@@ -42,7 +45,7 @@ const bootstrap = async () => {
       res.status(400).send({ message: 'Malformed body.' })
     }
     else {
-      const newsItem = await DatabaseService.newsService.get(req.params.id)
+      const newsItem = await newsDatabase.get(req.params.id)
       if (newsItem) {
         newsItem.comments.push(data.body)
         await newsItem.save()
@@ -57,7 +60,7 @@ const bootstrap = async () => {
   // Delete a news article
   app.delete('/news/:id', async (req, res) => {
     const id = req.params.id
-    const removedNews = await DatabaseService.newsService.remove(id)
+    const removedNews = await newsDatabase.remove(id)
     res.status(200).send(removedNews)
   })
 
